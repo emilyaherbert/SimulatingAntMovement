@@ -179,23 +179,27 @@ object SimGeneralizedLinearRegressionModel {
     val x_df = spark.read.schema(schema).option("header", false).option("delimiter", ",").csv(x_file).cache()
     val va = new VectorAssembler().setInputCols(x_df.columns.dropRight(1)).setOutputCol("features")
     val x_withFeatures = va.transform(x_df)
+    val Array(x_trainData, x_testData) = x_withFeatures.randomSplit(Array(0.7, 0.3))
 
     val y_df = spark.read.schema(schema).option("header", false).option("delimiter", ",").csv(y_file).cache()
     val y_withFeatures = va.transform(y_df)
+    val Array(y_trainData, y_testData) = y_withFeatures.randomSplit(Array(0.7, 0.3))
 
-    new SimGeneralizedLinearRegressionModel(x_withFeatures, y_withFeatures, family, link, x_df.columns.last, spark)
+    new SimGeneralizedLinearRegressionModel((x_trainData,x_testData), (y_trainData,y_testData), family, link, x_df.columns.last, spark)
   }
 }
 
-class SimGeneralizedLinearRegressionModel private (private val x_df: org.apache.spark.sql.Dataset[Row],
-    private val y_df: org.apache.spark.sql.Dataset[Row],
+class SimGeneralizedLinearRegressionModel private (private val x_data: (org.apache.spark.sql.Dataset[Row],org.apache.spark.sql.Dataset[Row]),
+    private val y_data: (org.apache.spark.sql.Dataset[Row],org.apache.spark.sql.Dataset[Row]),
     private val family: String,
     private val link: String,
     private val labelCol: String,
     private val spark: SparkSession) extends Model {
   import spark.implicits._
-
-  private val (x_model, y_model) = (buildModel(x_df), buildModel(y_df))
+  
+  private val (x_testData, x_trainData) = x_data
+  private val (y_testData, y_trainData) = y_data
+  private val (x_model, y_model) = (buildModel(x_trainData), buildModel(y_trainData))
 
   private def buildModel(df: org.apache.spark.sql.Dataset[Row]): GeneralizedLinearRegressionModel = {
     new GeneralizedLinearRegression()
@@ -213,8 +217,12 @@ class SimGeneralizedLinearRegressionModel private (private val x_df: org.apache.
     modelInfo.update(x_model.transform(withFeatures).select("prediction").collect().head.getDouble(0), y_model.transform(withFeatures).select("prediction").collect().head.getDouble(0))
   }
 
-  def printAccuracy() {
-
+  def evaluate(): (Double, Double) = {
+    val evaluator = new RegressionEvaluator()
+      .setLabelCol(labelCol)
+      .setPredictionCol("prediction")
+      .setMetricName("rmse")
+    (evaluator.evaluate(x_model.transform(x_testData)), evaluator.evaluate(y_model.transform(y_testData)))
   }
 }
 
@@ -241,7 +249,6 @@ class SimDecisionTreeRegressionModel private (x_data: (org.apache.spark.sql.Data
 
   private val (x_testData, x_trainData) = x_data
   private val (y_testData, y_trainData) = y_data
-
   private val (x_model, y_model) = (buildModel(x_trainData), buildModel(y_trainData))
 
   private def buildModel(trainData: org.apache.spark.sql.Dataset[Row]): PipelineModel = {
@@ -298,7 +305,6 @@ class SimRandomForestRegressionModel private (x_data: (org.apache.spark.sql.Data
 
   private val (x_testData, x_trainData) = x_data
   private val (y_testData, y_trainData) = y_data
-
   private val (x_model, y_model) = (buildModel(x_trainData), buildModel(y_trainData))
 
   private def buildModel(trainData: org.apache.spark.sql.Dataset[Row]): PipelineModel = {
@@ -355,7 +361,6 @@ class SimGradientBoostedTreeRegressionModel private (x_data: (org.apache.spark.s
 
   private val (x_testData, x_trainData) = x_data
   private val (y_testData, y_trainData) = y_data
-
   private val (x_model, y_model) = (buildModel(x_trainData), buildModel(y_trainData))
 
   private def buildModel(trainData: org.apache.spark.sql.Dataset[Row]): PipelineModel = {
@@ -412,7 +417,6 @@ class SimIsotonicRegressionModel private (x_data: (org.apache.spark.sql.Dataset[
 
   private val (x_testData, x_trainData) = x_data
   private val (y_testData, y_trainData) = y_data
-
   private val (x_model, y_model) = (buildModel(x_trainData), buildModel(y_trainData))
 
   private def buildModel(trainData: org.apache.spark.sql.Dataset[Row]): IsotonicRegressionModel = {

@@ -1,6 +1,23 @@
 # Simulating Ant Movement
 
-## Ant Colony Simulation
+Each example below has 20 ants start at random locations in the center of the screen and with random starting delta x and delta y values between -1.0 and 1.0. Except for the neural network models, the frame rate is low because of how the deltas have to be converted in order to be run through the Spark Regression models. I either didn't set up the movement the most efficiently or Spark Regression is not well suited logistically for this task.
+
+## Ant Colony Simulations Using Single Memory
+
+|   Regression Type	|   x Model RMSE Error	|   y Model RMSE Error	|
+|---	|---	|---	|
+|   Neural Network	|   N/A	|   N/A	|
+|   Generalized Linear	|   0.21451702580696064	|   0.20709492709337082	|
+|   Decision Tree	|   0.2143733553998713	|   0.2078695940361415	|
+|   Random Forest	|   0.21562697363158317	|   0.20881193248739285	|
+|   Gradient Boosted Tree	|   0.21626389443469646	|   0.2087277590487002	|
+|  Isotonic 	|   0.21583479078377174	|   0.20719963503085556	|
+
+   Generalized Linear Regression: (0.21451702580696064,0.20709492709337082)
+       Decision Tree  Regression: (0.2143733553998713,0.2078695940361415)
+       Random Forest  Regression: (0.21562697363158317,0.20881193248739285)
+Gradient Boosted Tree Regression: (0.21626389443469646,0.2087277590487002)
+             Isotonic Regression: (0.21583479078377174,0.20719963503085556)
 
 ### Regression with Neural Networks
 
@@ -24,7 +41,11 @@
 
 ### Isotonic Regression
 
-![alt text](images/isotonic.gif "Isotonic Regression")
+![alt text](images/isotonic.gif "Isotonic Regression")'
+
+## Ant Colony Simulations Using Longer-Term Memory
+
+...
 
 ## Other Visualizations
 

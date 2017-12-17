@@ -46,23 +46,27 @@ object ColonySimulation extends JFXApp {
     StructField("y4", DoubleType),
     StructField("n", DoubleType)))
 
-  val nnm = SimNeuralNetworkModel(x_file, y_file, 0, ',', 100, 2, 2)
-  val glrm = SimGeneralizedLinearRegressionModel(x_file, y_file, schema, spark)
+  val nn = SimNeuralNetworkModel(x_file, y_file, 0, ',', 100, 2, 2)
+  val glr = SimGeneralizedLinearRegressionModel(x_file, y_file, schema, spark)
   val dtr = SimDecisionTreeRegressionModel(x_file, y_file, schema, spark)
   val rfr = SimRandomForestRegressionModel(x_file, y_file, schema, spark)
   val gbtr = SimGradientBoostedTreeRegressionModel(x_file, y_file, schema, spark)
   val ir = SimIsotonicRegressionModel(x_file, y_file, schema, spark)
   
   //glrm.printAccuracy()
+  println("   Generalized Linear Regression: " + glr.evaluate)
   println("       Decision Tree  Regression: " + dtr.evaluate)
   println("       Random Forest  Regression: " + rfr.evaluate)
   println("Gradient Boosted Tree Regression: " + gbtr.evaluate)
   println("             Isotonic Regression: " + ir.evaluate)
 
+  /*
   val outputFileStub = "/data/BigData/students/eherbert/output/isotonic/"
   val wimg = new WritableImage(600, 600)
   val pw = wimg.pixelWriter
-  var index = 300
+  var index = 100
+  * 
+  */
 
   stage = new JFXApp.PrimaryStage {
     title = "Ants"
@@ -88,6 +92,7 @@ object ColonySimulation extends JFXApp {
           ants.foreach(_.move(delta))
           ants.foreach(_.display(gc))
 
+          /*
           for (i <- 0 until 600) {
             for (j <- 0 until 600) {
               pw.setColor(i, j, Color.Black)
@@ -96,6 +101,8 @@ object ColonySimulation extends JFXApp {
           ants.foreach(_.save(pw))
           ImageIO.write(SwingFXUtils.fromFXImage(wimg, null), "png", new java.io.File(outputFileStub + "frame_" + index + ".png"))
           index += 1
+          * 
+          */
         }
         lastTime = time
       }
