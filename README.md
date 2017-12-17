@@ -1,6 +1,6 @@
 # Simulating Ant Movement
 
-The goal of this project was to see if you could realistically model movement among ant colonies. To do so, a (video of ants crawling around in a dish)[www.eecs.qmul.ac.uk/~andrea/thdt.html] was analyzed for patterns in ant locations. The video was broken up in to frames and the frames were interpreted as 2D arrays of grey intensities. K Means clustering was used to find the ant locations and the relative x and y deltas between ants across frames.
+The goal of this project was to see if you could realistically model movement among ant colonies. To do so, a [video of ants crawling around in a dish](www.eecs.qmul.ac.uk/~andrea/thdt.html) was analyzed for patterns in ant locations. The video was broken up in to frames and the frames were interpreted as 2D arrays of grey intensities. K Means clustering was used to find the ant locations and the relative x and y deltas between ants across frames.
 
 To predict it's next movement, an ant passes its previous x and y deltas to the x and y regression models. x and y are run as two seperate models because of how the prediction values are returned, but both models for each test are trained on the same data and are both passed x and y values in order to make a next prediction. As the simulation runs, the ant continually runs its previous delta values through the regression predictor and moves accordingly.
 
