@@ -2,9 +2,29 @@
 
 ## Ant Colony Simulation
 
+### Regression with Neural Networks
+
+![alt text](images/neuralnetwork.gif "Regression with Neural Networks")
+
+### Generalized Linear Regression
+
+![alt text](images/linearregression.gif "Generalized Linear Regression")
+
 ### Decision Tree Regression
 
-(0.21566620417820404,0.20824189931351036)
+![alt text](images/decisiontree.gif "Decision Tree Regression")
+
+### Random Forest Regression
+
+![alt text](images/randomforest.gif "Random Forest Regression")
+
+### Gradient-Boosted Tree Regression
+
+![alt text](images/gbt.gif "Gradient-Boosted Tree Regression")
+
+### Isotonic Regression
+
+![alt text](images/isotonic.gif "Isotonic Regression")
 
 ## Other Visualizations
 
