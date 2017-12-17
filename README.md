@@ -1,5 +1,19 @@
 # Simulating Ant Movement
 
+## Ant Colony Simulation
+
+## Other Visualizations
+
+### Heat Map
+
+This is just a simple heat map of where ants traveled during the course of the video.
+
+![alt text](images/heatmap.png "Heat Map")
+
+This is a heat map with a different color gradient. It is interesting that in the full heat map, the ants clearly appeared to travel more around the outside edge of the dish, but in this map, they can be seen traveling through the center equally as often as around the outside.
+
+![alt text](images/heatmap_2.png "Heat Map 2")
+
 ## Similar Size K Means Clustering Algorithm
 
 In order to find the ant locations in each frame, I clustered on points of certain grey intensities. I found that the K Means algorithm often produced clusters with centers that did not correspond to apparent ant locations. I imagine that this is a result of the nature of the initialization of the starting k points, where depending on the proximity of the closest points to dense groupings of ants, it could be that the cluster centers converge with multiple ants in one cluster.
@@ -22,4 +36,4 @@ There are quite a few things that need improving with this algorithm though. Fir
 
 It would be interesting to write a version of this were instead of moving the centers from the smallest clusters it moved the centers from clusters closest together. This might even produce better results, as I can see a case where one ant is very small and it is always considered the smallest cluster, even when another ant is in two clusters elsewhere. I also would like to try initializing the clusters with the kmeansII algorithm instead of just randomly.
 
-This portion of the project ended up being what I spent most of my time on and was probably the portion that I was satisfied with, which is unfortunate becase I did not use this algorithm in my colony simulation. To run on one image the Similar Size K Means takes ~30 seconds. With over 10000 images, it would have taken ~83.3 hours to find the centers of each one. Not a long time by science standards but a very long time by the Pandora Spark cluster standards.
+This portion of the project ended up being what I spent most of my time on and was probably the portion that I was satisfied with, which is unfortunate becase I did not use this algorithm in my colony simulation. To run on one image the Similar Size K Means takes ~30 seconds. With over 10000 images, it would have taken ~83.3 hours to find the centers of each one. Not a long time by science standards but a very long time by end of semester project standards.
