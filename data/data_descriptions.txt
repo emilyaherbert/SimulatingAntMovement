@@ -1,0 +1,11 @@
+clusterlocations.txt - cluster locations in order by frame
+
+deltas.txt - previous delta x and delta y, next delta x and delta y
+
+deltas_x.txt - previous delta x and delta y, next delta x
+
+deltas_y.txt - previous delta x and delta y, next delta y
+
+deltas_x_memory.txt - previous 4 delta x and delta y, next delta x
+ 
+deltas_y_memory.txt - previous 4 delta x and delta y, next delta y
