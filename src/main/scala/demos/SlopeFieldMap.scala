@@ -1,4 +1,4 @@
-package models
+package demos
 
 import org.apache.spark.sql.SparkSession
 import scala.collection.mutable.Buffer

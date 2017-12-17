@@ -1,4 +1,4 @@
-package models
+package demos
 
 import scalafx.application.JFXApp
 import org.apache.spark.sql.SparkSession
