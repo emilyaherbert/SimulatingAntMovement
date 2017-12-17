@@ -1,10 +1,16 @@
 # Simulating Ant Movement
 
+The goal of this project was to see if you could realistically model movement among ant colonies. To do so, a (video of ants crawling around in a dish)[www.eecs.qmul.ac.uk/~andrea/thdt.html] was analyzed for patterns in ant locations. The video was broken up in to frames and the frames were interpreted as 2D arrays of grey intensities. K Means clustering was used to find the ant locations and the relative x and y deltas between ants across frames.
+
+To predict it's next movement, an ant passes its previous x and y deltas to the x and y regression models. x and y are run as two seperate models because of how the prediction values are returned, but both models for each test are trained on the same data and are both passed x and y values in order to make a next prediction. As the simulation runs, the ant continually runs its previous delta values through the regression predictor and moves accordingly.
+
 Each example below has 20 ants start at random locations in the center of the screen and with random starting delta x and delta y values between -1.0 and 1.0. Except for the neural network models, the frame rate is low because of how the deltas have to be converted in order to be run through the Spark Regression models. I either didn't set up the movement the most efficiently or Spark Regression is not well suited logistically for this task.
 
 ## Ant Colony Simulations Using Single Memory
 
-|   Regression Type	|   x Model RMSE Error	|   y Model RMSE Error	|
+Here is the Root Mean Squared Error (RMSE) of the models that I tried. I was not able to calculate the RMSE for the neural network model.
+
+|   Regression Type	|   x Model RMSE	|   y Model RMSE	|
 |---	|---	|---	|
 |   Neural Network	|   N/A	|   N/A	|
 |   Generalized Linear	|   0.21451702580696064	|   0.20709492709337082	|
@@ -13,13 +19,11 @@ Each example below has 20 ants start at random locations in the center of the sc
 |   Gradient Boosted Tree	|   0.21626389443469646	|   0.2087277590487002	|
 |  Isotonic 	|   0.21583479078377174	|   0.20719963503085556	|
 
-   Generalized Linear Regression: (0.21451702580696064,0.20709492709337082)
-       Decision Tree  Regression: (0.2143733553998713,0.2078695940361415)
-       Random Forest  Regression: (0.21562697363158317,0.20881193248739285)
-Gradient Boosted Tree Regression: (0.21626389443469646,0.2087277590487002)
-             Isotonic Regression: (0.21583479078377174,0.20719963503085556)
+Even though they were all relatively consistent in their RMSE values, each regression model gave very different results.
 
 ### Regression with Neural Networks
+
+The neural network model arguably performed the worst, which doesn't necessarily surprise me. If I were to guess, I would say that the ratio of possible labels to number of data points was too high to accurately train the model. There were 34798 points split among testing and training and nearly 10^17 possible labels.
 
 ![alt text](images/neuralnetwork.gif "Regression with Neural Networks")
 
@@ -61,7 +65,13 @@ This is a heat map with a different color gradient. It is interesting that in th
 
 ### Slope Field Graph
 
-This is a representation of the 
+...
+
+## Results
+
+To be honest, I am not fully sure what all this is telling me. Different regression models appear to produce better results, but they all have around the same RMSE, so I am not sure how much better one is from another.
+
+The video really is just ants crawling around in a dish, and there are no external agents or outside forces, so it could be that in this contained environment their movement is close to random. It would be interesting to use the same models on a more varied video to see how the ants react to other agents or environmental change.
 
 ## Similar Size K Means Clustering Algorithm
 
