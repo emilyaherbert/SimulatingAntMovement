@@ -1,38 +1,26 @@
 package demos
 
-import java.io.File
-
-import org.apache.spark.ml.feature.VectorAssembler
-import org.apache.spark.ml.regression.GeneralizedLinearRegression
-import org.apache.spark.ml.regression.GeneralizedLinearRegressionModel
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StructType
-import org.datavec.api.records.reader.impl.csv.CSVRecordReader
-import org.datavec.api.split.FileSplit
-import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator
-import org.deeplearning4j.nn.api.OptimizationAlgorithm
-import org.deeplearning4j.nn.conf.NeuralNetConfiguration
-import org.deeplearning4j.nn.conf.Updater
-import org.deeplearning4j.nn.conf.layers.DenseLayer
-import org.deeplearning4j.nn.conf.layers.OutputLayer
-import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
-import org.deeplearning4j.nn.weights.WeightInit
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener
-import org.nd4j.linalg.activations.Activation
-import org.nd4j.linalg.factory.Nd4j
-import org.nd4j.linalg.lossfunctions.LossFunctions
 
+import javax.imageio.ImageIO
 import scalafx.animation.AnimationTimer
 import scalafx.application.JFXApp
+import scalafx.embed.swing.SwingFXUtils
 import scalafx.scene.Scene
 import scalafx.scene.canvas.Canvas
-import scalafx.scene.canvas.GraphicsContext
+import scalafx.scene.image.WritableImage
 import scalafx.scene.paint.Color
-import utility.Model
-import utility.NeuralNetworkModel
 import utility.NormalModelInfo
+import utility.SimDecisionTreeRegressionModel
+import utility.SimGeneralizedLinearRegressionModel
+import utility.SimNeuralNetworkModel
+import utility.SimRandomForestRegressionModel
+import utility.SimGradientBoostedTreeRegressionModel
+import utility.SimIsotonicRegressionModel
+
 
 object ColonySimulation extends JFXApp {
   val spark = SparkSession.builder().master("local[*]" /*"spark://pandora00:7077"*/ ).getOrCreate()
@@ -58,12 +46,23 @@ object ColonySimulation extends JFXApp {
     StructField("y4", DoubleType),
     StructField("n", DoubleType)))
 
-  val neuralNetworkModel = NeuralNetworkModel(x_file, y_file, 0, ',', 100, 2, 2)
+  val nnm = SimNeuralNetworkModel(x_file, y_file, 0, ',', 100, 2, 2)
+  val glrm = SimGeneralizedLinearRegressionModel(x_file, y_file, schema, spark)
+  val dtr = SimDecisionTreeRegressionModel(x_file, y_file, schema, spark)
+  val rfr = SimRandomForestRegressionModel(x_file, y_file, schema, spark)
+  val gbtr = SimGradientBoostedTreeRegressionModel(x_file, y_file, schema, spark)
+  val ir = SimIsotonicRegressionModel(x_file, y_file, schema, spark)
+  
+  //glrm.printAccuracy()
+  println("       Decision Tree  Regression: " + dtr.evaluate)
+  println("       Random Forest  Regression: " + rfr.evaluate)
+  println("Gradient Boosted Tree Regression: " + gbtr.evaluate)
+  println("             Isotonic Regression: " + ir.evaluate)
 
-  val generalizedLinearRegressionModels = inputFiles.map { file =>
-    val model = getGeneralizedLinearRegressionModel(file, schema)
-    model
-  }
+  val outputFileStub = "/data/BigData/students/eherbert/output/isotonic/"
+  val wimg = new WritableImage(600, 600)
+  val pw = wimg.pixelWriter
+  var index = 300
 
   stage = new JFXApp.PrimaryStage {
     title = "Ants"
@@ -76,9 +75,9 @@ object ColonySimulation extends JFXApp {
 
       val ants = Array.fill(20)(new SimulationAnt(util.Random.nextInt(200) + 200,
         util.Random.nextInt(200) + 200,
-        2000.0,
-        neuralNetworkModel,
-        NormalModelInfo()))
+        3500.0,
+        gbtr, // change this to change current sim model
+        NormalModelInfo())) // change this to change if using memory
 
       var lastTime = 0L
       val timer = AnimationTimer { time =>
@@ -89,7 +88,6 @@ object ColonySimulation extends JFXApp {
           ants.foreach(_.move(delta))
           ants.foreach(_.display(gc))
 
-          /*
           for (i <- 0 until 600) {
             for (j <- 0 until 600) {
               pw.setColor(i, j, Color.Black)
@@ -98,8 +96,6 @@ object ColonySimulation extends JFXApp {
           ants.foreach(_.save(pw))
           ImageIO.write(SwingFXUtils.fromFXImage(wimg, null), "png", new java.io.File(outputFileStub + "frame_" + index + ".png"))
           index += 1
-          * 
-          */
         }
         lastTime = time
       }
@@ -108,18 +104,5 @@ object ColonySimulation extends JFXApp {
     }
   }
 
-  spark.sparkContext.stop()
-
-  def getGeneralizedLinearRegressionModel(file: String, schema: StructType): GeneralizedLinearRegressionModel = {
-    val df = spark.read.schema(schema).option("header", false).option("delimiter", ",").csv(file)
-    val va = new VectorAssembler().setInputCols(df.columns.dropRight(1)).setOutputCol("features")
-    val withFeatures = va.transform(df)
-    val lr = new GeneralizedLinearRegression()
-      .setFamily("gaussian")
-      .setLink("identity")
-      .setLabelCol(df.columns.last)
-    val model = lr.fit(withFeatures)
-    model
-  }
-
+  //spark.sparkContext.stop()
 }

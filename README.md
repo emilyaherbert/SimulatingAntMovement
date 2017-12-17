@@ -2,6 +2,10 @@
 
 ## Ant Colony Simulation
 
+### Decision Tree Regression
+
+(0.21566620417820404,0.20824189931351036)
+
 ## Other Visualizations
 
 ### Heat Map
@@ -13,6 +17,10 @@ This is just a simple heat map of where ants traveled during the course of the v
 This is a heat map with a different color gradient. It is interesting that in the full heat map, the ants clearly appeared to travel more around the outside edge of the dish, but in this map, they can be seen traveling through the center equally as often as around the outside.
 
 ![alt text](images/heatmap_2.png "Heat Map 2")
+
+### Slope Field Graph
+
+This is a representation of the 
 
 ## Similar Size K Means Clustering Algorithm
 

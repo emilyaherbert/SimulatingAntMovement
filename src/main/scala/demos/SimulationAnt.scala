@@ -6,6 +6,7 @@ import scalafx.scene.canvas.GraphicsContext
 import scalafx.scene.paint.Color
 import utility.ModelInfo
 import utility.Model
+import scalafx.scene.image.PixelWriter
 
 class SimulationAnt(var cx: Double,
     var cy: Double,
@@ -24,7 +25,6 @@ class SimulationAnt(var cx: Double,
     gc.fillOval(cx - 5, cy - 5, 10, 10)
   }
 
-  /*
   def save(pw: PixelWriter) {
     for (i <- (0 max (cx.toInt - 5)) until (600 min (cx.toInt + 5))) {
       for (j <- (0 max (cy.toInt - 5)) until (600 min (cy.toInt + 5))) {
@@ -32,8 +32,6 @@ class SimulationAnt(var cx: Double,
       }
     }
   }
-  * 
-  */
 
   private def updateArray(arr: Array[Double], x: Double, y: Double): Array[Double] = {
     for (i <- 2 until arr.length) {
