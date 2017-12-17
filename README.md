@@ -4,7 +4,7 @@ The goal of this project was to see if you could realistically model movement am
 
 To predict it's next movement, an ant passes its previous x and y deltas to the x and y regression models. x and y are run as two seperate models because of how the prediction values are returned, but both models for each test are trained on the same data and are both passed x and y values in order to make a next prediction. As the simulation runs, the ant continually runs its previous delta values through the regression predictor and moves accordingly.
 
-Each example below has 20 ants start at random locations in the center of the screen and with random starting delta x and delta y values between -1.0 and 1.0. Except for the neural network models, the frame rate is low because of how the deltas have to be converted in order to be run through the Spark Regression models. I either didn't set up the movement the most efficiently or Spark Regression is not well suited logistically for this task.
+Each example below has 20 ants start at random locations in the center of the screen and with random starting delta x and delta y values between -1.0 and 1.0. Except for the neural network models, the frame rate is low because of how the deltas have to be converted in order to be run through the Spark Regression models.
 
 ## Ant Colony Simulations Using Single Memory
 
